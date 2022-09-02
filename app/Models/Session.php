@@ -5,26 +5,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
-   @property varchar $username username
-@property varchar $password password
-@property text $remember_token remember token
+   @property varchar $session session
 @property datetime $created_at created at
 @property datetime $updated_at updated at
-@property \Illuminate\Database\Eloquent\Collection $teacher hasMany
+@property \Illuminate\Database\Eloquent\Collection $timetable hasMany
 
  */
-class User extends Model
+class Session extends Model
 {
 
     /**
     * Database table name
     */
-    protected $table = 'users';
+    protected $table = 'sessions';
 
     /**
     * Mass assignable columns
     */
-    protected $fillable=['username'];
+    protected $fillable=['session'];
 
     /**
     * Date time columns.
@@ -32,13 +30,13 @@ class User extends Model
     protected $dates=[];
 
     /**
-    * teachers
+    * timetables
     *
     * @return HasMany
     */
-    public function teachers()
+    public function timetables()
     {
-        return $this->hasMany(Teacher::class,'user_id');
+        return $this->hasMany(Timetable::class,'session_id');
     }
 
 
