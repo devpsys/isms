@@ -40,5 +40,10 @@ class Subject extends Model
     }
 
 
+    public function instructors()
+    {
+        return [];
+    }
+
 
 }
