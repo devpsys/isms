@@ -49,7 +49,7 @@ class Data
             foreach ($ints_perm[$i] as $inst){
                 $cs[] = self::INSTRUCTORS[$inst];
             }
-            $this->courses[] = new Course("C".$i+1,mt_rand(111,999)."k",$cs,20);
+            $this->courses[] = new Course("C".  ($i+1), mt_rand(111,999)."k",  $cs,20);
         }
 //        (float)rand() / (float)getrandmax()
         $this->numberOfClasses = 0;
