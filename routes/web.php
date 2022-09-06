@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\KlassController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\SubjectController;
 use App\TTAlgo\Data;
 use App\TTAlgo\Population;
 use Illuminate\Support\Facades\Route;
@@ -45,9 +46,9 @@ Route::prefix('manage')->group(function () {
 
     //  Subjects
     Route::prefix('subjects')->group(function () {
-        Route::get('/', function () {
-            echo 'Subjects!';
-        });
+        Route::get('/', [SubjectController::class, 'index'])->name('manage.subjects');
+        Route::post('/store', [SubjectController::class, 'store'])->name('manage.subjects.store');
+        Route::post('/destroy', [SubjectController::class, 'destroy'])->name('manage.subjects.destroy');
     });
 
     //  Teachers
