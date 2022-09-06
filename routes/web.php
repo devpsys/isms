@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\KlassController;
 use App\Http\Controllers\SectionController;
 use App\TTAlgo\Data;
 use App\TTAlgo\Population;
@@ -37,9 +38,9 @@ Route::prefix('manage')->group(function () {
 
     //  Classes
     Route::prefix('classes')->group(function () {
-        Route::get('/', function () {
-            echo 'Classes!';
-        });
+        Route::get('/', [KlassController::class, 'index'])->name('manage.classes');
+        Route::post('/store', [KlassController::class, 'store'])->name('manage.classes.store');
+        Route::post('/destroy', [KlassController::class, 'destroy'])->name('manage.classes.destroy');
     });
 
     //  Subjects

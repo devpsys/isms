@@ -24,7 +24,7 @@ class Klass extends Model
     /**
      * Mass assignable columns
      */
-    protected $fillable = ['section_id', 'title'];
+    protected $fillable = ['section_id', 'class_name'];
 
     /**
      * Date time columns.

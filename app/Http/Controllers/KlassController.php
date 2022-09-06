@@ -2,21 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\Klass;
 use App\Http\Requests\Klasses\Index;
-use App\Http\Requests\Klasses\Show;
-use App\Http\Requests\Klasses\Create;
 use App\Http\Requests\Klasses\Store;
-use App\Http\Requests\Klasses\Edit;
-use App\Http\Requests\Klasses\Update;
 use App\Http\Requests\Klasses\Destroy;
-use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 
 
 /**
@@ -34,93 +28,34 @@ class KlassController extends Controller
      */
     public function index(Index $request)
     {
-        return view('pages.klasses.index', ['records' => Klass::paginate(10)]);
-    }
+        $klasses = DB::table('klasses')
+            ->join('sections', 'sections.id', '=', 'klasses.section_id')
+            ->select(['klasses.*', 'sections.title'])
+            ->get();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param Show $request
-     * @param Klass $klass
-     * @return Response
-     */
-    public function show(Show $request, Klass $klass)
-    {
-        return view('pages.klasses.show', [
-            'record' => $klass,
-        ]);
-
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @param Create $request
-     * @return Response
-     */
-    public function create(Create $request)
-    {
-
-        return view('pages.klasses.create', [
-            'model' => new Klass,
-
-        ]);
+        return view('pages.klasses.index', compact('klasses'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param Store $request
-     * @return Response
+     * @return RedirectResponse
      */
     public function store(Store $request)
     {
-        $model = new Klass;
+        if (isset($request->id))
+            $model = Klass::find($request->id);
+        else
+            $model = new Klass;
         $model->fill($request->all());
 
         if ($model->save()) {
 
-            session()->flash('app_message', 'Klass saved successfully');
-            return redirect()->route('klasses.index');
+            session()->flash('app_message', 'Class saved successfully');
+            return redirect()->route('manage.classes');
         } else {
-            session()->flash('app_message', 'Something is wrong while saving Klass');
-        }
-        return redirect()->back();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Edit $request
-     * @param Klass $klass
-     * @return Response
-     */
-    public function edit(Edit $request, Klass $klass)
-    {
-
-        return view('pages.klasses.edit', [
-            'model' => $klass,
-
-        ]);
-    }
-
-    /**
-     * Update a existing resource in storage.
-     *
-     * @param Update $request
-     * @param Klass $klass
-     * @return Response
-     */
-    public function update(Update $request, Klass $klass)
-    {
-        $klass->fill($request->all());
-
-        if ($klass->save()) {
-
-            session()->flash('app_message', 'Klass successfully updated');
-            return redirect()->route('klasses.index');
-        } else {
-            session()->flash('app_error', 'Something is wrong while updating Klass');
+            session()->flash('app_message', 'Something is wrong while saving Class');
         }
         return redirect()->back();
     }
@@ -129,16 +64,16 @@ class KlassController extends Controller
      * Delete a  resource from  storage.
      *
      * @param Destroy $request
-     * @param Klass $klass
-     * @return Response
-     * @throws Exception
+     * @return RedirectResponse
      */
-    public function destroy(Destroy $request, Klass $klass)
+    public function destroy(Destroy $request)
     {
+        $klass = Klass::find($request->id);
+
         if ($klass->delete()) {
-            session()->flash('app_message', 'Klass successfully deleted');
+            session()->flash('app_message', 'Class successfully deleted');
         } else {
-            session()->flash('app_error', 'Error occurred while deleting Klass');
+            session()->flash('app_error', 'Error occurred while deleting Class');
         }
 
         return redirect()->back();

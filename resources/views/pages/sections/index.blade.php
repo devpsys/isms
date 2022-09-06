@@ -34,7 +34,7 @@
                                 <tr>
                                     <th style="width: 10px">#</th>
                                     <th>Section</th>
-                                    <th style="width: 10%">Actions</th>
+                                    <th style="width: 17%">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -48,7 +48,9 @@
                                                    placeholder="Section Name">
                                         </td>
                                         <td>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                <i class="fa fa-save"></i> Save
+                                            </button>
                                         </td>
                                     </tr>
                                 </form>
@@ -57,13 +59,14 @@
                                         <td>{{$loop->iteration}}</td>
                                         <td>{{ $section->title }}</td>
                                         <td>
-                                            <a class="btn btn-primary btn-sm edit"
+                                            <a class="btn btn-outline-primary btn-sm edit"
                                                data-id="{{ $section->id }}" data-title="{{ $section->title }}">
-                                                <i class="fa fa-edit"></i>
+                                                <i class="fa fa-edit"></i> Edit
                                             </a>
-                                            <a class="btn btn-danger btn-sm delete" data-toggle="modal"
+                                            &nbsp;
+                                            <a class="btn btn-outline-danger btn-sm delete" data-toggle="modal"
                                                data-id="{{ $section->id }}" data-target="#modal-delete">
-                                                <i class="fa fa-trash"></i>
+                                                <i class="fa fa-trash"></i> Delete
                                             </a>
                                         </td>
                                     </tr>
