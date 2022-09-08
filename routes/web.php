@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\KlassController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TimingController;
@@ -31,6 +32,13 @@ Route::get('/', function () {
 });
 
 Route::prefix('manage')->group(function () {
+
+    //  Sessions
+    Route::prefix('sessions')->group(function () {
+        Route::get('/', [SessionController::class, 'index'])->name('manage.sessions');
+        Route::post('/store', [SessionController::class, 'store'])->name('manage.sessions.store');
+        Route::post('/destroy', [SessionController::class, 'destroy'])->name('manage.sessions.destroy');
+    });
 
     //  Sections
     Route::prefix('sections')->group(function () {

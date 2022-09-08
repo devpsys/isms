@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use App\Models\Session;
 use App\Http\Requests\Sessions\Index;
-use App\Http\Requests\Sessions\Show;
-use App\Http\Requests\Sessions\Create;
 use App\Http\Requests\Sessions\Store;
-use App\Http\Requests\Sessions\Edit;
-use App\Http\Requests\Sessions\Update;
 use App\Http\Requests\Sessions\Destroy;
+use Illuminate\Http\RedirectResponse;
 
 
 /**
@@ -19,111 +17,59 @@ use App\Http\Requests\Sessions\Destroy;
  *
  * @author Tuhin Bepari <digitaldreams40@gmail.com>
  */
-
 class SessionController extends Controller
 {
-       /**
+    /**
      * Display a listing of the resource.
      *
-     * @param  Index  $request
-     * @return \Illuminate\Http\Response
+     * @param Index $request
+     * @return Application|Factory|View
      */
     public function index(Index $request)
     {
-        return view('pages.sessions.index', ['records' => Session::paginate(10)]);
-    }    /**
-     * Display the specified resource.
-     *
-     * @param  Show  $request
-     * @param  Session  $session
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Show $request, Session $session)
-    {
-        return view('pages.sessions.show', [
-                'record' =>$session,
-        ]);
+        $sessions = Session::orderBy('session', 'desc')->get();
 
-    }    /**
-     * Show the form for creating a new resource.
-     *
-     * @param  Create  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Create $request)
-    {
+        return view('pages.sessions.index', compact('sessions'));
+    }
 
-        return view('pages.sessions.create', [
-            'model' => new Session,
-
-        ]);
-    }    /**
+    /**
      * Store a newly created resource in storage.
      *
-     * @param  Store  $request
-     * @return \Illuminate\Http\Response
+     * @param Store $request
+     * @return RedirectResponse
      */
     public function store(Store $request)
     {
-        $model=new Session;
+        if (isset($request->id))
+            $model = Session::find($request->id);
+        else
+            $model = new Session;
         $model->fill($request->all());
 
         if ($model->save()) {
-            
+
             session()->flash('app_message', 'Session saved successfully');
-            return redirect()->route('sessions.index');
-            } else {
-                session()->flash('app_message', 'Something is wrong while saving Session');
-            }
+            return redirect()->route('manage.sessions');
+        } else {
+            session()->flash('app_message', 'Something is wrong while saving Session');
+        }
         return redirect()->back();
-    } /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  Edit  $request
-     * @param  Session  $session
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Edit $request, Session $session)
-    {
+    }
 
-        return view('pages.sessions.edit', [
-            'model' => $session,
-
-            ]);
-    }    /**
-     * Update a existing resource in storage.
-     *
-     * @param  Update  $request
-     * @param  Session  $session
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Update $request,Session $session)
-    {
-        $session->fill($request->all());
-
-        if ($session->save()) {
-            
-            session()->flash('app_message', 'Session successfully updated');
-            return redirect()->route('sessions.index');
-            } else {
-                session()->flash('app_error', 'Something is wrong while updating Session');
-            }
-        return redirect()->back();
-    }    /**
+    /**
      * Delete a  resource from  storage.
      *
-     * @param  Destroy  $request
-     * @param  Session  $session
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
+     * @param Destroy $request
+     * @return RedirectResponse
      */
-    public function destroy(Destroy $request, Session $session)
+    public function destroy(Destroy $request)
     {
+        $session = Session::find($request->id);
         if ($session->delete()) {
-                session()->flash('app_message', 'Session successfully deleted');
-            } else {
-                session()->flash('app_error', 'Error occurred while deleting Session');
-            }
+            session()->flash('app_message', 'Session successfully deleted');
+        } else {
+            session()->flash('app_error', 'Error occurred while deleting Session');
+        }
 
         return redirect()->back();
     }
