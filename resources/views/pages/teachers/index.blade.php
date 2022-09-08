@@ -1,4 +1,7 @@
 @extends('layouts.app')
+@section('css')
+    <link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css') }}">
+@endsection
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -38,7 +41,7 @@
                                     <th>Full Name</th>
                                     <th>Phone</th>
                                     <th>Address</th>
-                                    <th style="width: 17%">Actions</th>
+                                    <th style="width: 30%">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -61,15 +64,15 @@
                                         </td>
                                         <td>
                                             <input type="text" class="form-control" name="fullname" id="fullname"
-                                                   placeholder="Full Name">
+                                                   placeholder="Full Name" required>
                                         </td>
                                         <td>
                                             <input type="number" class="form-control" name="gsm" id="gsm"
-                                                   placeholder="Phone Number">
+                                                   placeholder="Phone Number" required>
                                         </td>
                                         <td>
                                             <input type="text" class="form-control" name="address" id="address"
-                                                   placeholder="Address">
+                                                   placeholder="Address" required>
                                         </td>
                                         <td>
                                             <button type="submit" class="btn btn-outline-primary btn-sm">
@@ -88,12 +91,17 @@
                                     @foreach($teachers as $teacher)
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
-                                            <td>&nbsp;</td>
+                                            <td>{{ $teacher->staff_number }}</td>
                                             <td>{{ $teacher->title }}</td>
                                             <td>{{ $teacher->fullname }}</td>
                                             <td>{{ $teacher->gsm }}</td>
                                             <td>{{ $teacher->address }}</td>
                                             <td>
+                                                <a class="btn btn-outline-success btn-sm assign" data-toggle="modal"
+                                                   data-target="#modal-assign" data-id="{{ $teacher->id }}">
+                                                    <i class="fa fa-link"></i> Assign Subject(s)
+                                                </a>
+                                                &nbsp;
                                                 <a class="btn btn-outline-primary btn-sm edit"
                                                    data-id="{{ $teacher->id }}" data-title="{{ $teacher->title }}"
                                                    data-name="{{ $teacher->fullname }}" data-gsm="{{ $teacher->gsm }}"
@@ -150,13 +158,107 @@
             <!-- /.modal-dialog -->
         </div>
         <!-- /.modal -->
+
+        <div class="modal fade" id="modal-assign">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Assign Subject(s)</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="subjects-form" action="#" method="post">
+                        <div class="modal-body">
+                            {{csrf_field()}}
+                            <input type="hidden" name="teacher_id" id="teacher-id">
+                            <div id="subjects">
+                                <table class="table table-bordered table-head-fixed table-sm text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th style="width:5%">#</th>
+                                        <th>Subject</th>
+                                        <th style="text-align: center; width:20%">
+                                            <span>Assign All</span>
+                                            <input type="checkbox" id="checkAll">
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="subjects-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">
+                                Assign
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
     </section>
     <!-- /.content -->
 @endsection
 @section('scripts')
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
+    <script src="{{ asset('assets/plugins/toastr/toastr.min.js') }}"></script>
     <script>
         $(document).ready(function () {
+            $(document).on('click', '.assign', function () {
+                let teacher_id = $(this).data('id')
+
+                $('#teacher-id').val($(this).data('id'))
+                $('#subjects-body').html('')
+
+                $.get('{{ route('manage.teachers.teacher.subjects',[':teacher']) }}'.replace(':teacher', teacher_id),
+                    function (data) {
+
+                        let rows = ''
+                        let all = true
+                        $.each(data, function (i, v) {
+                            if (v.assigned === 0)
+                                all = false
+                            rows += `<tr>
+                                        <td>${i + 1}</td>
+                                        <td>${v.title}</td>
+                                        <td style='text-align: center;'>
+                                            <input type='checkbox' class='checkbox' name='subjects[]' value='${v.id}' ${v.assigned == 1 ? 'checked' : ''} >
+                                        </td>
+                                    </tr>`
+                        })
+
+                        $('#subjects-body').html(rows)
+                        $('#checkAll').prop("checked", all)
+                    })
+            })
+
+            //  On Submit
+            $('#subjects-form').on('submit', function (e) {
+                e.preventDefault()
+
+                console.log($(this))
+
+                $.post('{{route('manage.teachers.assign')}}', $(this).serialize(), function (data) {
+                    let response = JSON.parse(data)
+                    if (response.success) toastr.success(response.message)
+                    else toastr.error(response.message)
+
+                    $('#modal-assign').modal('hide')
+                })
+            })
+
+            $('#checkAll').on('click', function () {
+                if ($(this).is(":checked"))
+                    $('.checkbox').prop("checked", true);
+                else $('.checkbox').prop("checked", false);
+            })
+
             $('body').on('click', '.edit', function () {
                 $('#id').val($(this).data('id'))
                 $('#title').val($(this).data('title'))
@@ -164,6 +266,7 @@
                 $('#gsm').val($(this).data('gsm'))
                 $('#address').val($(this).data('address'))
             })
+
             $(document).on('click', '.delete', function () {
                 $('#del-id').val($(this).data('id'))
             })

@@ -4,6 +4,7 @@ use App\Http\Controllers\KlassController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\TimingController;
 use App\TTAlgo\Data;
 use App\TTAlgo\Population;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,15 @@ Route::prefix('manage')->group(function () {
     Route::prefix('teachers')->group(function () {
         Route::get('/', [TeacherController::class, 'index'])->name('manage.teachers');
         Route::post('/store', [TeacherController::class, 'store'])->name('manage.teachers.store');
+        Route::post('/assign', [TeacherController::class, 'assign'])->name('manage.teachers.assign');
         Route::post('/destroy', [TeacherController::class, 'destroy'])->name('manage.teachers.destroy');
+        Route::get('/teacher/subjects/{teacher}', [TeacherController::class, 'subjects'])->name('manage.teachers.teacher.subjects');
+    });
+
+    //  Timings
+    Route::prefix('timings')->group(function () {
+        Route::get('/', [TimingController::class, 'index'])->name('manage.timings');
+        Route::post('/store', [TimingController::class, 'store'])->name('manage.timings.store');
+        Route::post('/destroy', [TimingController::class, 'destroy'])->name('manage.timings.destroy');
     });
 });

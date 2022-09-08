@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Teachers;
+namespace App\Http\Requests\Timings;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Index extends FormRequest 
+class Destroy extends FormRequest 
 {
 
     /**

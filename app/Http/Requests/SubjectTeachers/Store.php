@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Teachers;
+namespace App\Http\Requests\SubjectTeachers;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Store extends FormRequest
+class Store extends FormRequest 
 {
 
     /**
@@ -12,7 +12,7 @@ class Store extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize() 
     {
         return true;
     }
@@ -22,15 +22,11 @@ class Store extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules() 
     {
         return [
-//			'user_id' => 'required|exists:users,id|numeric',
-//			'staff_number' => 'required|max:15',
-			'title' => 'required|in:Malam,Malama,Ustaz,Ustaziya,Sheikh',
-			'fullname' => 'required|max:100',
-			'gsm' => 'required|max:15',
-			'address' => 'required|string',
+			'subject_id' => 'required|exists:subjects,id|numeric',
+			'teacher_id' => 'required|exists:teachers,id|numeric',
         ];
     }
 
@@ -42,7 +38,7 @@ class Store extends FormRequest
     public function messages()
     {
         return [
-
+     
         ];
     }
 

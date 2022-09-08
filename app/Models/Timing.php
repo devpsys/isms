@@ -29,8 +29,7 @@ class Timing extends Model
     /**
      * Date time columns.
      */
-    protected $dates = ['time_from',
-        'time_to'];
+    protected $dates = [];
 
     /**
      * periods
