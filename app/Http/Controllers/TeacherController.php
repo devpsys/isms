@@ -24,10 +24,10 @@ class TeacherController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Index $request
+     * @param Request $request
      * @return Application|Factory|View
      */
-    public function index(Index $request)
+    public function index(Request $request)
     {
         $teachers = Teacher::all();
 
@@ -38,10 +38,10 @@ class TeacherController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Store $request
+     * @param Request $request
      * @return RedirectResponse
      */
-    public function store(Store $request)
+    public function store(Request $request)
     {
         if (isset($request->id))
             $model = Teacher::find($request->id);
@@ -128,10 +128,10 @@ class TeacherController extends Controller
     /**
      * Delete a  resource from  storage.
      *
-     * @param Destroy $request
+     * @param Request $request
      * @return RedirectResponse
      */
-    public function destroy(Destroy $request)
+    public function destroy(Request $request)
     {
         $teacher = Teacher::find($request->id);
 
