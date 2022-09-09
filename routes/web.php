@@ -37,6 +37,9 @@ Route::prefix('timetables')->group(function () {
     Route::get('/', [TimetableController::class, 'index'])->name('timetables');
     Route::get('/create', [TimetableController::class, 'create'])->name('timetables.create');
     Route::get('/view/{timetable}', [TimetableController::class, 'show'])->name('timetables.show');
+    Route::post('/subjects/assigned', [TimetableController::class, 'assignedSubject'])->name('timetables.assigned.subject');
+    Route::post('/generate/', [TimetableController::class, 'generate'])->name('timetables.generate');
+
 });
 
 Route::prefix('manage')->group(function () {

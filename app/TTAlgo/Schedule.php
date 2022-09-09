@@ -26,6 +26,7 @@ class Schedule
 
     public function __init()
     {
+        $this->_numbOfConflicts = 0;
         $courses_ = $this->_data->getCourses();
 //        dd($courses_);
         $meetingTimes = $this->_data->getMeetingTimes();
@@ -96,7 +97,7 @@ class Schedule
         return $this->_isFitnessChaanged;
     }
 
-    private function calculate_fitness()
+    public function calculate_fitness()
     {
         $this->_noOfConflicts = 0;
         $classes = $this->getClasses();
@@ -106,7 +107,7 @@ class Schedule
                 $this->_noOfConflicts++;
             }
             for ($j=$i;$j<count($classes);$j++){
-                if($classes[$i]->getMeetingTime()==$classes[$j]->getMeetingTime() && $classes[$i]->getId()!=$classes[$j->getId()]){
+                if($classes[$i]->getMeetingTime()==$classes[$j]->getMeetingTime() && $classes[$i]->getId()!=$classes[$j]->getId()){
                     if($classes[$i]->getRoom()->compareTo($classes[$j]->getRoom())) {
                         $this->_noOfConflicts++;
                     }

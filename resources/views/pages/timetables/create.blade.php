@@ -25,72 +25,61 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">New Time Table</h3>
                         </div>
-                        <!-- /.card-header -->
-                        <form>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label>Sections</label>
-                                    <select class="select2" name="section_ids" id="section" multiple="multiple"
-                                            data-placeholder="Select Section" style="width: 100%;">
-                                        @foreach(\App\Models\Section::all() as $section)
-                                            <option value="{{ $section->id }}">{{  $section->title }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Sessions</label>
-                                    <select class="select2" name="session_ids" id="session" multiple="multiple"
-                                            data-placeholder="Select Session" style="width: 100%;">
-                                        @foreach(\App\Models\Session::orderBy('session','desc')->get() as $session)
-                                            <option value="{{ $session->id }}">{{  $session->session }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputFile">Term</label>
-                                    <input type="text" class="form-control" id="term" name="term"
-                                           placeholder="Term" required>
-                                </div>
-                                <button type="submit" class="btn btn-outline-primary pull-right" style="width:100%">
-                                    Generate
-                                </button>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Sections</label>
+                                <select class="select2" name="section_ids" id="section"
+                                        data-placeholder="Select Section" style="width: 100%;">
+                                    <option value="">Select Section</option>
+                                    @foreach(\App\Models\Section::all() as $section)
+                                        <option value="{{ $section->id }}">{{  $section->title }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <!-- /.card-body -->
-                        </form>
 
-                        {{--                        <div class="card-body">--}}
-                        {{--                            <div>--}}
+                            <div class="form-group">
+                                <label>Sessions</label>
+                                <select class="select2" name="session_ids" id="session"
+                                        data-placeholder="Select Session" style="width: 100%;">
+                                    <option value="">Select Session</option>
+                                    @foreach(\App\Models\Session::orderBy('session','desc')->get() as $session)
+                                        <option value="{{ $session->id }}">{{  $session->session }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputFile">Term</label>
+                                <select class="select2" id="term" name="term" data-placeholder="Select Term"
+                                        style="width: 100%;">
+                                    <option value="">Select Term</option>
+                                    <option value="1">First Term</option>
+                                    <option value="2">Second Term</option>
+                                    <option value="3">Third Term</option>
+                                </select>
+                            </div>
 
-                        {{--                            </div>--}}
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Subjects</h3>
+                        </div>
+                        <div class="card-body" id="loadArea">
 
-                        {{--                            <table class="table table-bordered">--}}
-                        {{--                                <thead>--}}
-                        {{--                                <tr>--}}
-                        {{--                                    <th style="width: 15px">#</th>--}}
-                        {{--                                    <th>Section</th>--}}
-                        {{--                                    <th>Session</th>--}}
-                        {{--                                    <th>Term</th>--}}
-                        {{--                                    <th>Published on</th>--}}
-                        {{--                                    <th>Actions</th>--}}
-                        {{--                                </tr>--}}
-                        {{--                                </thead>--}}
-                        {{--                                <tbody>--}}
-
-                        {{--                                </tbody>--}}
-                        {{--                            </table>--}}
-                        {{--                        </div>--}}
-                        <!-- /.card-body -->
+                        </div>
                     </div>
                     <!-- /.card -->
                 </div>
                 <!-- /.col -->
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Time Table</h3>
@@ -163,9 +152,26 @@
     <!-- Select2 -->
     <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
     <script>
+        function loadSubjects(session, section) {
+            if (section && session) {
+                $.ajax({
+                    data: {session: session, section: section, _token: "{{csrf_token()}}"},
+                    type: "POST",
+                    url: "{{route('timetables.assigned.subject')}}",
+                    success: function (data) {
+                        $("#loadArea").html(data);
+                    }
+                });
+            }
+        }
+
         $(document).ready(function () {
             //Initialize Select2 Elements
-            $('.select2').select2()
+            $('.select2').select2();
+            $("#session,#section").on("change", function () {
+                loadSubjects($("#session").val(), $("#section").val());
+            });
+
 
         })
     </script>

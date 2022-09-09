@@ -4,56 +4,32 @@ namespace App\TTAlgo;
 
 class Data
 {
-    const ROOMS = [["R1", 25], ["R2", 45], ["R3", 35], ["R4", 35], ["R5", 35]];
 
-    const MEETING_TIMES = [
-        ["MO1", "MO 04:15 - 04:45"],
-        ["MO2", "MO 04:45 - 05:15"],
-        ["MO3", "MO 05:15 - 05:45"],
-        ["TU1", "TU 04:15 - 04:45"],
-        ["TU2", "TU 04:45 - 05:15"],
-        ["TU3", "TU 05:15 - 05:45"],
-        ["WE1", "WE 04:15 - 04:45"],
-        ["WE2", "WE 04:45 - 05:15"],
-        ["WE3", "WE 05:15 - 05:45"],
-        ["SA", "SA 04:15 - 04:45"],
-        ["SA", "SA 04:45 - 05:15"],
-        ["SA", "SA 05:15 - 05:45"],
-        ["SU", "SU 04:15 - 04:45"],
-        ["SU", "SU 04:45 - 05:15"],
-        ["SU", "SU 05:15 - 05:45"],
-    ];
-    const INSTRUCTORS = [
-        ["I1", "Dr James Web"],
-        ["I2", "Mr. Mike Brown"],
-        ["I3", "Dr Steve Day"],
-        ["I4", "Mrs Jane Doe"]];
     public $rooms,$meeting_times,$instructors,$courses,$numberOfClasses;
 
-    public function __construct()
+    public function __construct($instructors,$meeting_times,$rooms,$classes)
     {
+
         $this->rooms = [];$this->meeting_times = [];$this->instructors = [];
 
-        foreach (range(0,count(self::ROOMS)-1) as $i){
-            $this->rooms[] = new Room($i,self::ROOMS[$i][0],self::ROOMS[$i][1]);
+        foreach ($rooms as $room){
+            $this->rooms[] = new Room($room->id,$room->class_name,$room->capacity);
         }
-        foreach (range(0,count(self::MEETING_TIMES)-1) as $i){
-            $this->meeting_times[] = new MeetingTime(self::MEETING_TIMES[$i][0],self::MEETING_TIMES[$i][1]);
+//        $days = [];
+        foreach ($meeting_times as $meeting_time){
+            $this->meeting_times[] = new MeetingTime("MO".$meeting_time->id,"MO".$meeting_time->time_from.'-'.$meeting_time->time_to);
+            $this->meeting_times[] = new MeetingTime("TU".$meeting_time->id,"TU".$meeting_time->time_from.'-'.$meeting_time->time_to);
+            $this->meeting_times[] = new MeetingTime("WD".$meeting_time->id,"WD".$meeting_time->time_from.'-'.$meeting_time->time_to);
+            $this->meeting_times[] = new MeetingTime("ST".$meeting_time->id,"ST".$meeting_time->time_from.'-'.$meeting_time->time_to);
+            $this->meeting_times[] = new MeetingTime("SU".$meeting_time->id,"SU".$meeting_time->time_from.'-'.$meeting_time->time_to);
         }
-        foreach (range(0,count(self::INSTRUCTORS)-1) as $i){
-            $this->instructors[] = new Instructor(self::INSTRUCTORS[$i][0],self::INSTRUCTORS[$i][1]);
+        foreach ($instructors as $instructor){
+            $this->instructors[] = new Instructor($instructor->id,$instructor->fullname);
         }
-        $ints_perm = [[0,1],[0,1,2],[0,1],[2,3],[3],[0,2],[1,3]];
-        for ($i=0;$i<7;$i++){
-            $cs = [];
-            foreach ($ints_perm[$i] as $inst){
-                $cs[] = self::INSTRUCTORS[$inst];
-            }
-            $this->courses[] = new Course("C".  ($i+1), mt_rand(111,999)."k",  $cs,20);
+        foreach ($classes as $class){
+            $this->courses[] =  new Course($class->id, $class->class_name, $class->teachers ,50);
         }
-//        (float)rand() / (float)getrandmax()
-        $this->numberOfClasses = 0;
-//        dd($this->courses);
+//        dd($this->rooms);
     }
 
     /**

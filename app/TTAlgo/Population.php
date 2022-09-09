@@ -29,11 +29,11 @@ class Population
      */
     public function getSchedules(): array
     {
-        $arr = [];
-        foreach ($this->schedules as $sh){
-            $arr []=$sh->toString();
-        }
-        return $arr;
+//        $arr = [];
+//        foreach ($this->schedules as $sh){
+//            $arr []=$sh;
+//        }
+        return $this->schedules;
     }
 
 

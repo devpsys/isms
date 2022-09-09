@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
+use App\Models\Klass;
+use App\Models\KlassSubjectTeacher;
+use App\Models\Teacher;
+use App\Models\Timing;
+use App\TTAlgo\Data;
+use App\TTAlgo\Population;
+use Exception;;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -16,6 +22,7 @@ use App\Http\Requests\Timetables\Store;
 use App\Http\Requests\Timetables\Edit;
 use App\Http\Requests\Timetables\Update;
 use App\Http\Requests\Timetables\Destroy;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -147,5 +154,64 @@ class TimetableController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function assignedSubject(Request $request)
+    {
+//        return $request;
+        $session = $request->input("session");
+
+        $subjects  = KlassSubjectTeacher::
+                join("klasses","klasses.id","=","klass_subject_teachers.class_id")
+                ->join("subjects","subjects.id","=","klass_subject_teachers.subject_id")
+                ->join("teachers","teachers.id","=","klass_subject_teachers.teacher_id")
+                ->select(DB::raw("CONCAT(teachers.title,' ',teachers.fullname) AS teacher"),"subjects.title AS subject","klasses.class_name AS class","klass_subject_teachers.*")
+                ->where(["session_id"=>$session])->get();
+        return \view("pages.timetables.subjects",compact('subjects','session'));
+    }
+
+    public function generate(Request $request)
+    {
+        $session = $request->input("session");
+        $teachers  = Teacher::whereIn('id',KlassSubjectTeacher::where(["session_id"=>$session])->pluck("teacher_id"))->get();
+        $rooms = Klass::whereIn("id",KlassSubjectTeacher::where(["session_id"=>$session])->pluck("class_id"))->get();
+        $courses = KlassSubjectTeacher::where(["session_id"=>$session])
+            ->join("subjects","subjects.id","=","klass_subject_teachers.subject_id")
+            ->select("subjects.title AS subject","klass_subject_teachers.*")
+            ->get();
+        $timings = Timing::whereIn('id',[8,9,10])->get();
+        $courseData = [];
+        foreach ($courses as $course){
+            if(isset($request->subject[$course->id])){
+                $count = $request->subject[$course->id];
+                for ($i=0;$i<$count;$i++){
+                    $cls = new \stdClass();
+                    $cls->id = $course->id.".".$i;
+                    $cls->class_name = $course->subject;
+                    $cls->teachers = [$course->teacher_id];
+                    $courseData[] = $cls;
+                }
+            }
+
+        }
+//        return [$courseData];
+        $data = new Data($teachers,$timings,$rooms,$courseData);
+        $population_size = 9;
+        $population = new Population($population_size, $data);
+        $pot = [];
+        $i = 0;
+        foreach ($population->getSchedules() as $schedule){
+            $schedule->calculate_fitness();
+            $i++;
+            foreach ($schedule->getClasses() as $clx){
+                $pot["sch".$i][] = [
+                    $clx->getId(),$clx->getCourse()->name,
+                    $clx->getCourse()->getNumber(),
+                    $clx->getInstructor()->getName(),
+                    $clx->getMeetingTime()->time,$schedule->_noOfConflicts];
+            }
+        }
+        return json_encode($pot);
+
     }
 }
