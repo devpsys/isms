@@ -1,7 +1,4 @@
 @extends('layouts.app')
-@section('css')
-    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css') }}">
-@endsection
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -31,36 +28,104 @@
                             <h3 class="card-title">New Time Table</h3>
                         </div>
                         <div class="card-body">
-                            <div class="form-group">
-                                <label>Sections</label>
-                                <select class="select2" name="section_ids" id="section"
-                                        data-placeholder="Select Section" style="width: 100%;">
-                                    <option value="">Select Section</option>
-                                    @foreach(\App\Models\Section::all() as $section)
-                                        <option value="{{ $section->id }}">{{  $section->title }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Sections</label>
+                                        <select class="form-control select2" name="section_ids" id="section"
+                                                data-placeholder="Select Section" style="width: 100%;">
+                                            <option value="">Select Section</option>
+                                            @foreach(\App\Models\Section::all() as $section)
+                                                <option value="{{ $section->id }}">{{  $section->title }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Sessions</label>
+                                        <select class="form-control select2" name="session_ids" id="session"
+                                                data-placeholder="Select Session" style="width: 100%;">
+                                            <option value="">Select Session</option>
+                                            @foreach(\App\Models\Session::orderBy('session','desc')->get() as $session)
+                                                <option value="{{ $session->id }}">{{  $session->session }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Sessions</label>
-                                <select class="select2" name="session_ids" id="session"
-                                        data-placeholder="Select Session" style="width: 100%;">
-                                    <option value="">Select Session</option>
-                                    @foreach(\App\Models\Session::orderBy('session','desc')->get() as $session)
-                                        <option value="{{ $session->id }}">{{  $session->session }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Time From</label>
+                                        <input type="time" class="form-control" name="time_from" id="time_from"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Time To</label>
+                                        <input type="time" class="form-control" name="time_to" id="time_to" required>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="exampleInputFile">Term</label>
-                                <select class="select2" id="term" name="term" data-placeholder="Select Term"
-                                        style="width: 100%;">
-                                    <option value="">Select Term</option>
-                                    <option value="1">First Term</option>
-                                    <option value="2">Second Term</option>
-                                    <option value="3">Third Term</option>
-                                </select>
+
+                            <div class="row mt-3">
+                                <div class="col-6 form-group">
+                                    <label>Period Length</label>
+                                    <input type="number" class="form-control" placeholder="Length in minutes" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label>Days</label>
+                                <div class="row form-group clearfix">
+                                    <div class="col-3">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="SU" value="SU" name="days[]">
+                                            <label for="SU">SUN</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="mo" value="MO" name="days[]">
+                                            <label for="mo">MON</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="tu" value="TU" name="days[]">
+                                            <label for="tu">TUE</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="we" value="WE" name="days[]">
+                                            <label for="we">WED</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="th" value="TH" name="days[]">
+                                            <label for="th">THU</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="fr" value="FR" name="days[]">
+                                            <label for="fr">FRI</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="st" value="ST" name="days[]">
+                                            <label for="st">SAT</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
@@ -166,8 +231,6 @@
         }
 
         $(document).ready(function () {
-            //Initialize Select2 Elements
-            $('.select2').select2();
             $("#session,#section").on("change", function () {
                 loadSubjects($("#session").val(), $("#section").val());
             });
