@@ -5,6 +5,7 @@ use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\TimetableController;
 use App\Http\Controllers\TimingController;
 use App\TTAlgo\Data;
 use App\TTAlgo\Population;
@@ -29,6 +30,13 @@ Route::get('/', function () {
     $population_size = 1;
     $population = new Population($population_size, $data);
     echo(json_encode($population->getSchedules()));
+});
+
+//  Time Table
+Route::prefix('timetables')->group(function () {
+    Route::get('/', [TimetableController::class, 'index'])->name('timetables');
+    Route::get('/create', [TimetableController::class, 'create'])->name('timetables.create');
+    Route::get('/view/{timetable}', [TimetableController::class, 'show'])->name('timetables.show');
 });
 
 Route::prefix('manage')->group(function () {
