@@ -46,6 +46,12 @@ class Claxx
         $this->id = $id;
     }
 
+    public function getRefinedId()
+    {
+        $idX = explode(".",$this->course->number);
+        return $idX[0];
+    }
+
 
     /**
      * @return mixed
@@ -85,6 +91,21 @@ class Claxx
     public function getMeetingTime()
     {
         return $this->meetingTime;
+    }
+
+    public function meetingDay()
+    {
+        return $this->meetingTime->meetingDay();
+    }
+
+    public function sameDay(Claxx $obj)
+    {
+        return $this->meetingDay() == $obj->meetingDay() && $this->sameRefinedId($obj);
+    }
+
+    public function sameRefinedId(Claxx $obj)
+    {
+        return $this->getRefinedId() == $obj->getRefinedId();
     }
 
     /**

@@ -53,4 +53,9 @@ class MeetingTime
         return $this->time;
     }
 
+    public function meetingDay()
+    {
+        return substr($this->time,0,2);
+    }
+
 }

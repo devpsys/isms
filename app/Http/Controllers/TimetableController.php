@@ -8,6 +8,7 @@ use App\Models\Teacher;
 use App\Models\Timing;
 use App\TTAlgo\Data;
 use App\TTAlgo\Population;
+use Carbon\Carbon;
 use Exception;;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -172,6 +173,39 @@ class TimetableController extends Controller
 
     public function generate(Request $request)
     {
+//        return $request;
+        $timetable = Timetable::where([
+            "section_id"=>$request->section_id,
+            "session_id"=>$request->session_id
+        ])->first();
+        if(!$timetable){
+            $timetable = new Timetable();
+            $timetable->section_id = $request->section_id;
+            $timetable->session_id = $request->session_id;
+            $timetable->term = 1;
+        }
+        $date   = Carbon::parse("2022-01-01 {$request->time_from}:00");
+        $dateTo = Carbon::parse("2022-01-01 {$request->time_to}:00");
+        $days = $request->days;
+        $dayMap = [
+            "MO"=>"Monday","TU"=>"Tuesday","WE"=>"Wednesday",
+            "TH"=>"Thursday","FR"=>"Friday","SA"=>"Saturday",
+            "SU"=>"Sunday"
+        ];
+
+        $i = 1;
+        $timings = [];
+        while($date < $dateTo){
+            $time = new \stdClass();
+            $time->id = $i;
+            $time->time_from = $date->format("h:i");
+            $date->addMinutes($request->time_length);
+            $time->time_to = $date->format("h:i");
+            $time->time = $time->time_from."-".$time->time_to;
+            $timings[] = $time;
+            $i++;
+        }
+//        return $timings;
         $session = $request->input("session");
         $teachers  = Teacher::whereIn('id',KlassSubjectTeacher::where(["session_id"=>$session])->pluck("teacher_id"))->get();
         $rooms = Klass::whereIn("id",KlassSubjectTeacher::where(["session_id"=>$session])->pluck("class_id"))->get();
@@ -179,8 +213,9 @@ class TimetableController extends Controller
             ->join("subjects","subjects.id","=","klass_subject_teachers.subject_id")
             ->select("subjects.title AS subject","klass_subject_teachers.*")
             ->get();
-        $timings = Timing::whereIn('id',[8,9,10])->get();
+
         $courseData = [];
+        $z = 0;
         foreach ($courses as $course){
             if(isset($request->subject[$course->id])){
                 $count = $request->subject[$course->id];
@@ -190,28 +225,56 @@ class TimetableController extends Controller
                     $cls->class_name = $course->subject;
                     $cls->teachers = [$course->teacher_id];
                     $courseData[] = $cls;
+                    $z++;
                 }
             }
 
         }
+//        return $z;
 //        return [$courseData];
-        $data = new Data($teachers,$timings,$rooms,$courseData);
+        $data = new Data($teachers,$timings,$rooms,$courseData,$days);
         $population_size = 9;
         $population = new Population($population_size, $data);
         $pot = [];
+        $classMap = [];
         $i = 0;
         foreach ($population->getSchedules() as $schedule){
             $schedule->calculate_fitness();
             $i++;
-            foreach ($schedule->getClasses() as $clx){
-                $pot["sch".$i][] = [
-                    $clx->getId(),$clx->getCourse()->name,
-                    $clx->getCourse()->getNumber(),
-                    $clx->getInstructor()->getName(),
-                    $clx->getMeetingTime()->time,$schedule->_noOfConflicts];
+            $schlClass = $schedule->getClasses();
+            if($schedule->_noOfConflicts==0 && count($schlClass)==5){
+                foreach ($schlClass as $clx){
+                    $time = substr($clx->getMeetingTime()->time,2);
+                    $day  = substr($clx->getMeetingTime()->time,0,2);
+                    $pot["sch".$i][$day][$clx->getRoom()->number][$time] = [
+                        "id"=>$clx->getCourse()->getNumber(),
+                        "subject"=>$clx->getCourse()->name,
+                        "instructor"=>$clx->getInstructor()->getName(),
+                        "time"=>$time,
+                        "room"=>$clx->getRoom()->number
+                    ];
+                    $classMap[] = $clx->getRoom()->id;
+                }
             }
-        }
-        return json_encode($pot);
 
+        }
+        $info =[
+            "schedules"=>$pot,
+            "classes"=>Klass::whereIn("id",$classMap)->orderBy("id","ASC")->pluck("class_name"),
+            "days"=>$dayMap,
+            "timing"=>$timings
+        ];
+        $timetable->config = json_encode($info);
+        $timetable->save();
+
+        return redirect(route("timetables.display",[$timetable->id]));
+
+    }
+
+    public function displayTimes(Request $request,$id)
+    {
+        $timetable = Timetable::find($id);
+//        return $timetable->config;
+        return view("pages.timetables.displaytimes",compact('timetable'));
     }
 }

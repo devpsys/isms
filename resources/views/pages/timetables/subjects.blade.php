@@ -1,4 +1,4 @@
-<form action="{{route('timetables.generate')}}" method="post">
+
     <input type="hidden" name="session" value="{{$session}}" >
     @csrf
     <table class="table table-bordered">
@@ -23,11 +23,10 @@
         </tbody>
         <tfoot>
         <th colspan="2">
-            <button type="submit" class="btn btn-outline-primary pull-right" style="width:100%">
+            <button type="submit" id="genBtn" class="btn btn-outline-primary pull-right" style="width:100%">
                 Generate
             </button>
         </th>
         </tfoot>
     </table>
 
-</form>

@@ -7,7 +7,7 @@ class Data
 
     public $rooms,$meeting_times,$instructors,$courses,$numberOfClasses;
 
-    public function __construct($instructors,$meeting_times,$rooms,$classes)
+    public function __construct($instructors,$meeting_times,$rooms,$classes,$days)
     {
 
         $this->rooms = [];$this->meeting_times = [];$this->instructors = [];
@@ -17,11 +17,9 @@ class Data
         }
 //        $days = [];
         foreach ($meeting_times as $meeting_time){
-            $this->meeting_times[] = new MeetingTime("MO".$meeting_time->id,"MO".$meeting_time->time_from.'-'.$meeting_time->time_to);
-            $this->meeting_times[] = new MeetingTime("TU".$meeting_time->id,"TU".$meeting_time->time_from.'-'.$meeting_time->time_to);
-            $this->meeting_times[] = new MeetingTime("WD".$meeting_time->id,"WD".$meeting_time->time_from.'-'.$meeting_time->time_to);
-            $this->meeting_times[] = new MeetingTime("ST".$meeting_time->id,"ST".$meeting_time->time_from.'-'.$meeting_time->time_to);
-            $this->meeting_times[] = new MeetingTime("SU".$meeting_time->id,"SU".$meeting_time->time_from.'-'.$meeting_time->time_to);
+            foreach ($days as $day){
+                $this->meeting_times[] = new MeetingTime($day.$meeting_time->id,$day.$meeting_time->time_from.'-'.$meeting_time->time_to);
+            }
         }
         foreach ($instructors as $instructor){
             $this->instructors[] = new Instructor($instructor->id,$instructor->fullname);
