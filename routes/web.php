@@ -23,13 +23,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+//
+//    $data = new Data();
+//    $generationNumber = 0;
+////    print "\n> Generation #$generationNumber";
+//    $population_size = 1;
+//    $population = new Population($population_size, $data);
+//    echo(json_encode($population->getSchedules()));
 
-    $data = new Data();
-    $generationNumber = 0;
-//    print "\n> Generation #$generationNumber";
-    $population_size = 1;
-    $population = new Population($population_size, $data);
-    echo(json_encode($population->getSchedules()));
 });
 
 //  Time Table
