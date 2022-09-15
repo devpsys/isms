@@ -79,7 +79,7 @@ Route::prefix('manage')->group(function () {
         Route::post('/store', [TeacherController::class, 'store'])->name('manage.teachers.store');
         Route::post('/assign', [TeacherController::class, 'assign'])->name('manage.teachers.assign');
         Route::post('/destroy', [TeacherController::class, 'destroy'])->name('manage.teachers.destroy');
-        Route::get('/teacher/subjects/{teacher}', [TeacherController::class, 'subjects'])->name('manage.teachers.teacher.subjects');
+        Route::get('/teacher/subjects/{session}/{class}/{teacher}', [TeacherController::class, 'subjects'])->name('manage.teachers.teacher.subjects');
     });
 
     //  Timings

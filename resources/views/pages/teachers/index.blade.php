@@ -160,7 +160,7 @@
         <!-- /.modal -->
 
         <div class="modal fade" id="modal-assign">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Assign Subject(s)</h4>
@@ -172,6 +172,26 @@
                         <div class="modal-body">
                             {{csrf_field()}}
                             <input type="hidden" name="teacher_id" id="teacher-id">
+                            <div class="row">
+                                <div class="col-6 form-group">
+                                    <label>Session</label>
+                                    <select class="form-control" name="session_id" id="session_id" required>
+                                        <option value="">Select Session</option>
+                                        @foreach(\App\Models\Session::orderBy('session','desc')->get() as $session)
+                                            <option value="{{ $session->id }}">{{ $session->session }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-6 form-group">
+                                    <label>Class</label>
+                                    <select class="form-control" name="class_id" id="klass" required>
+                                        <option value="">Select Class</option>
+                                        @foreach(\App\Models\Klass::all() as $class)
+                                            <option value="{{ $class->id }}">{{ $class->class_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div id="subjects">
                                 <table class="table table-bordered table-head-fixed table-sm text-nowrap">
                                     <thead>
@@ -179,7 +199,7 @@
                                         <th style="width:5%">#</th>
                                         <th>Subject</th>
                                         <th style="text-align: center; width:20%">
-                                            <span>Assign All</span>
+                                            {{--                                            <span>Assign All</span>--}}
                                             <input type="checkbox" id="checkAll">
                                         </th>
                                     </tr>
@@ -211,12 +231,17 @@
     <script>
         $(document).ready(function () {
             $(document).on('click', '.assign', function () {
-                let teacher_id = $(this).data('id')
-
                 $('#teacher-id').val($(this).data('id'))
+            })
+
+            $('#klass').on('change', function () {
                 $('#subjects-body').html('')
 
-                $.get('{{ route('manage.teachers.teacher.subjects',[':teacher']) }}'.replace(':teacher', teacher_id),
+                let teacher_id = $(this).data('id')
+
+                $.get('{{ route('manage.teachers.teacher.subjects',[':session', ':class', ':teacher']) }}'
+                        .replace(':session', $('#session_id').val()).replace(':class', $('#klass').val())
+                        .replace(':teacher', teacher_id),
                     function (data) {
 
                         let rows = ''
@@ -241,8 +266,6 @@
             //  On Submit
             $('#subjects-form').on('submit', function (e) {
                 e.preventDefault()
-
-                console.log($(this))
 
                 $.post('{{route('manage.teachers.assign')}}', $(this).serialize(), function (data) {
                     let response = JSON.parse(data)

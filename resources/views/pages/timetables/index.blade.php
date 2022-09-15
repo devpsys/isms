@@ -29,7 +29,7 @@
 
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 120px;">
-                                    <a class="btn btn-outline-primary btn-sm btn-block">
+                                    <a href="{{ route('timetables.create') }}" class="btn btn-outline-primary btn-sm btn-block">
                                         <i class="fa fa-plus"></i>
                                         Add New
                                     </a>

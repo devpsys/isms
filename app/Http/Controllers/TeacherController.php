@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KlassSubjectTeacher;
 use App\Models\Subject;
 use App\Models\SubjectTeacher;
 use Exception;
@@ -64,9 +65,13 @@ class TeacherController extends Controller
         return redirect()->back();
     }
 
-    public function subjects($teacher)
+    public function subjects($session, $class, $teacher)
     {
-        $subjectTeacher = SubjectTeacher::select(['id', 'subject_id'])->where(['teacher_id' => $teacher])->pluck('subject_id')->toArray();
+        $subjectTeacher = KlassSubjectTeacher::select(['id', 'subject_id'])
+            ->where(['session_id' => $session, 'class_id' => $class, 'teacher_id' => $teacher])
+            ->pluck('subject_id')
+            ->toArray();
+
         $idList = implode(',', $subjectTeacher);
         $idList = empty($idList) ? "0" : $idList;
 
@@ -79,32 +84,37 @@ class TeacherController extends Controller
         $array['success'] = true;
 
         try {
-            $subjectTeachers = SubjectTeacher::where(['teacher_id' => $request->teacher_id])->pluck('subject_id')->toArray();
+            $subjectTeachers = KlassSubjectTeacher::where(['session_id' => $request->session_id,
+                'class_id' => $request->class_id, 'subject_id' => $request->subject_id,
+                'teacher_id' => $request->teacher_id])->pluck('subject_id')->toArray();
 
             $subjects = $request->subjects;
 
             if (isset($subjects)) {
                 foreach ($subjects as $subject) {
-                    //  If permission is already assigned then skip it.
+                    //  If subject and class are already assigned then skip it.
                     if (in_array($subject, $subjectTeachers) == 1)
                         continue;
 
-                    $subjectTeacher = new SubjectTeacher();
+                    $subjectTeacher = new KlassSubjectTeacher();
+                    $subjectTeacher->session_id = $request->session_id;
+                    $subjectTeacher->class_id = $request->class_id;
                     $subjectTeacher->teacher_id = $request->teacher_id;
                     $subjectTeacher->subject_id = $subject;
                     $subjectTeacher->save();
                 }
 
-                $subjectTeachers = DB::table('subject_teachers')
-                    ->join('subjects', 'subjects.id', '=', 'subject_teachers.subject_id')
-                    ->join('teachers', 'teachers.id', '=', 'subject_teachers.teacher_id')
-                    ->where('subject_teachers.teacher_id', $request->teacher_id)
-                    ->pluck('subject_teachers.subject_id')
+                $subjectTeachers = DB::table('klass_subject_teachers')
+                    ->join('subjects', 'subjects.id', '=', 'klass_subject_teachers.subject_id')
+                    ->join('teachers', 'teachers.id', '=', 'klass_subject_teachers.teacher_id')
+                    ->where('klass_subject_teachers.session_id', $request->session_id)
+                    ->where('klass_subject_teachers.teacher_id', $request->teacher_id)
+                    ->pluck('klass_subject_teachers.subject_id')
                     ->toArray();
 
                 foreach ($subjectTeachers as $subjectTeacher) {
                     if (in_array($subjectTeacher, $subjects) == 0) {
-                        $rp = SubjectTeacher::where(['permission_id' => $subjectTeacher])->first();
+                        $rp = KlassSubjectTeacher::where(['subject_id' => $subjectTeacher])->first();
                         $rp->delete();
                     }
                 }
@@ -119,7 +129,7 @@ class TeacherController extends Controller
             }
         } catch (Exception $e) {
             $array['success'] = false;
-            $array['message'] = 'Something is wrong while assigning subject(s) to this Teacher.';
+            $array['message'] = $e->getMessage();// 'Something is wrong while assigning subject(s) to this Teacher.';
         }
 
         return json_encode($array);
