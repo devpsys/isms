@@ -65,7 +65,7 @@
                                                 </a>
                                                 &nbsp;
                                             @endif
-                                            <a class="btn btn-outline-primary btn-sm view"
+                                            <a class="btn btn-outline-primary btn-sm view" href="{{route('timetables.show',[$timetable->id])}}"
                                                data-id="{{ $timetable->id }}">
                                                 <i class="fa fa-eye"></i> View
                                             </a>

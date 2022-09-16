@@ -21,6 +21,7 @@ class Data
                 $this->meeting_times[] = new MeetingTime($day.$meeting_time->id,$day.$meeting_time->time_from.'-'.$meeting_time->time_to);
             }
         }
+
         foreach ($instructors as $instructor){
             $this->instructors[] = new Instructor($instructor->id,$instructor->fullname);
         }
@@ -28,6 +29,11 @@ class Data
             $this->courses[] =  new Course($class->id, $class->class_name, $class->teachers ,50);
         }
 //        dd($this->rooms);
+    }
+
+    public function __initiate()
+    {
+
     }
 
     /**

@@ -20,7 +20,7 @@
                         <th class="day" rowspan="{{count($info->classes)}}">{{$day}}</th>
                         <th>{{$class}}</th>
                         @foreach($info->timing as $time)
-                            @php $tt =$time->time;  @endphp
+                            @php $tt = $time->time;  @endphp
                             @if(isset($schedule->$d->$class->$tt ))
                                 <td>
                                     {{$schedule->$d->$class->$tt->subject}}

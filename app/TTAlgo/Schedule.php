@@ -68,7 +68,8 @@ class Schedule
 //                dd($tm);
             }
         }
-        $time = $list[random_int(0, count($list) - 1)];
+        $count = random_int(0, count($list));
+        $time = $count>0?$list[$count - 1]:(isset($list[0])?$list[0]:$meetingTimes[0] );
         $this->timeDict[substr($time->time, 0, 2)] = $classNum;
         $i = 0;
         foreach ($meetingTimes as $mt) {
