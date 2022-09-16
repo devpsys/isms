@@ -238,7 +238,7 @@ class TimetableController extends Controller
                 }
             }
         }
-//        return $courseData;
+        shuffle($courseData);
         $theBox = new TheBox($courseData,$timing,$days,$clx);
         $theBox->__init();
         $pot = [];
@@ -259,10 +259,15 @@ class TimetableController extends Controller
             }
 
         }
+
+        $dxz = [];
+        foreach ($days as $ds){
+            $dxz[$ds] = $dayMap[$ds];
+        }
         $info =[
             "schedules"=>$pot,
             "classes"=>Klass::whereIn("id",$classMap)->orderBy("id","ASC")->pluck("class_name"),
-            "days"=>$dayMap,
+            "days"=>$dxz,
             "timing"=>$timings
         ];
         $timetable->config = json_encode($info);

@@ -32,6 +32,7 @@
                                         @endforeach
                                     </tr>
                                     @foreach($info->days as $d=>$day)
+
                                         @foreach($info->classes as $class)
                                             @if($loop->index==0)
                                                 <tr>
@@ -42,8 +43,9 @@
                                                         @if(isset($schedule->$d->$class->$tt ))
                                                             @php  $teacher = \App\Models\Teacher::find($schedule->$d->$class->$tt->instructor); @endphp
                                                             <td>
-                                                                {{$schedule->$d->$class->$tt->subject}} <br>
-                                                                <strong>{{$teacher->title . " ".$teacher->fullname}}</strong>
+                                                                <strong>{{$schedule->$d->$class->$tt->subject}}</strong>
+                                                                <br>
+                                                                {{$teacher->title . " ".$teacher->fullname}}
                                                             </td>
                                                         @else
                                                             <td></td>
@@ -58,8 +60,8 @@
                                                         @if(isset($schedule->$d->$class->$tt ))
                                                             @php  $teacher = \App\Models\Teacher::find($schedule->$d->$class->$tt->instructor); @endphp
                                                             <td>
-                                                                {{$schedule->$d->$class->$tt->subject}} <br>
-                                                                <strong>{{$teacher->title . " ".$teacher->fullname}}</strong>
+                                                                <strong>{{$schedule->$d->$class->$tt->subject}} </strong><br>
+                                                                {{$teacher->title . " ".$teacher->fullname}}
                                                             </td>
                                                         @else
                                                             <td></td>
@@ -68,10 +70,10 @@
                                                 </tr>
                                             @endif
                                         @endforeach
+
                                     @endforeach
                                 </table>
                             @endforeach
-
 
 
                             <style>

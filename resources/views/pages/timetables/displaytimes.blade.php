@@ -24,8 +24,8 @@
                             @if(isset($schedule->$d->$class->$tt ))
                                 @php  $teacher = \App\Models\Teacher::find($schedule->$d->$class->$tt->instructor); @endphp
                                 <td>
-                                    {{$schedule->$d->$class->$tt->subject}} <br>
-                                    <strong>{{$teacher->title . " ".$teacher->fullname}}</strong>
+                                    <strong>{{$schedule->$d->$class->$tt->subject}}</strong> <br>
+                                    {{$teacher->title . " ".$teacher->fullname}}
                                 </td>
                             @else
                                 <td></td>
@@ -40,8 +40,8 @@
                             @if(isset($schedule->$d->$class->$tt ))
                                 @php  $teacher = \App\Models\Teacher::find($schedule->$d->$class->$tt->instructor); @endphp
                                 <td>
-                                    {{$schedule->$d->$class->$tt->subject}} <br>
-                                    <strong>{{$teacher->title . " ".$teacher->fullname}}</strong>
+                                    <strong> {{$schedule->$d->$class->$tt->subject}}</strong> <br>
+                                    {{$teacher->title . " ".$teacher->fullname}}
                                 </td>
                             @else
                                 <td></td>
