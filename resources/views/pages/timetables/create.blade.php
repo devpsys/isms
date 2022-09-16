@@ -86,6 +86,12 @@
                                     <div class="row form-group clearfix">
                                         <div class="col-3">
                                             <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="st" value="SA" name="days[]">
+                                                <label for="st">SAT</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="icheck-primary d-inline">
                                                 <input type="checkbox" id="SU" value="SU" name="days[]">
                                                 <label for="SU">SUN</label>
                                             </div>
@@ -120,12 +126,6 @@
                                             <div class="icheck-primary d-inline">
                                                 <input type="checkbox" id="fr" value="FR" name="days[]">
                                                 <label for="fr">FRI</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-3">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="st" value="SA" name="days[]">
-                                                <label for="st">SAT</label>
                                             </div>
                                         </div>
                                     </div>
