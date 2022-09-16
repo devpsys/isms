@@ -20,10 +20,12 @@
                         <th class="day" rowspan="{{count($info->classes)}}">{{$day}}</th>
                         <th>{{$class}}</th>
                         @foreach($info->timing as $time)
-                            @php $tt = $time->time;  @endphp
+                            @php $tt = $time->time; @endphp
                             @if(isset($schedule->$d->$class->$tt ))
+                                @php  $teacher = \App\Models\Teacher::find($schedule->$d->$class->$tt->instructor); @endphp
                                 <td>
-                                    {{$schedule->$d->$class->$tt->subject}}
+                                    {{$schedule->$d->$class->$tt->subject}} <br>
+                                    {{$teacher->title . " ".$teacher->fullname}}
                                 </td>
                             @else
                                 <td></td>
