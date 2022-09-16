@@ -50,6 +50,7 @@ class TimetableController extends Controller
                 'timetables.published'])
             ->get();
 
+
         return view('pages.timetables.index', compact('timetables'));
     }
 
@@ -62,6 +63,7 @@ class TimetableController extends Controller
      */
     public function show(Show $request, Timetable $timetable)
     {
+//        return $timetable->config;
         return view('pages.timetables.show', compact('timetable'));
     }
 
@@ -246,12 +248,13 @@ class TimetableController extends Controller
             for ($j=0;$j<count($timing);$j++){
                 if($box[$i][$j]==null)continue;
                 $sub = explode('.',$box[$i][$j]->class);
-                $claxx = Klass::find($sub[0]);
-                $pot["sch"][$days[$i]][$claxx->class_name][$box[$i][$j]->start_time]=[
+                $claxxMap = KlassSubjectTeacher::find($sub[0]);
+                $claxx = Klass::find($claxxMap->class_id);
+                $pot["sch"][$days[$i]][$claxx->class_name][$timing[$j]]=[
                     "id"=>$box[$i][$j]->class,
                     "subject" => $box[$i][$j]->subject,
                     "instructor" => $box[$i][$j]->teacher,
-                    "time" => $box[$i][$j]->start_time
+                    "time" => $timing[$j]
                 ];
             }
 

@@ -33,9 +33,10 @@ class TheBox
 //        dd($this->box);
         for ($k=0;$k<$c;$k++){
             $cls = explode(".",$this->container[$k%$c]->class);
-            $period = new Period($this->container[$k]->subject,$cls[0],$this->container[$k]->teacher);
+            $period = new Period($this->container[$k]->subject,$this->container[$k%$c]->class,$this->container[$k]->teacher);
             $period->find($this->box,$this->class_time_map,$this->teacher_time_map,$this->timings,$this->days);
         }
+//        dd($this->box);
 
     }
 

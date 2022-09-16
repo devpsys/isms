@@ -29,8 +29,12 @@ class Period implements Comparable
         $found = 0;
         for ($i=0;$i<count($days);$i++){
             for($j=0;$j<count($timings);$j++){
-//                for($k=0;$k)
-                if($box[$i][$j] ==null && !isset($teacherMaps[$this->teacher][$days[$i]][$timings[$j]])  && !isset($classMaps[$this->class][$days[$i]]) && !isset($classMaps[$this->class][$days[$i]][$timings[$j]])){
+                if(
+                    $box[$i][$j] ==null
+                    && !isset($teacherMaps[$this->teacher][$days[$i]][$timings[$j]])
+                    && !isset($classMaps[$this->class][$days[$i]])
+                    && !isset($classMaps[$this->class][$days[$i]][$timings[$j]])
+                ){
                     $this->setDay($days[$i]);
                     $this->setStartTime($timings[$j]);
                     $box[$i][$j] = $this;
@@ -38,6 +42,9 @@ class Period implements Comparable
                     $classMaps[$this->class][$days[$i]][$timings[$j]] = 1;
                     $found = 1;
                     break;
+                }else{
+//                    dd($teacherMaps);
+
                 }
             }
             if($found) break;
