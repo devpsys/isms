@@ -22,7 +22,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Available Subjects</h3>
@@ -59,12 +59,13 @@
                                         <td>{{$loop->iteration}}</td>
                                         <td>{{ $subject->title }}</td>
                                         <td>
-                                            <a class="btn btn-outline-primary btn-sm edit"
+                                            <a style="font-size: 0.8em" class="btn btn-outline-primary btn-sm edit"
                                                data-id="{{ $subject->id }}" data-title="{{ $subject->title }}">
                                                 <i class="fa fa-edit"></i> Edit
                                             </a>
                                             &nbsp;
-                                            <a class="btn btn-outline-danger btn-sm delete" data-toggle="modal"
+                                            <a style="font-size: 0.8em" class="btn btn-outline-danger btn-sm delete"
+                                               data-toggle="modal"
                                                data-id="{{ $subject->id }}" data-target="#modal-delete">
                                                 <i class="fa fa-trash"></i> Delete
                                             </a>

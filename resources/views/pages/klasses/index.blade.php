@@ -22,7 +22,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Available Classes</h3>
@@ -37,13 +37,17 @@
                                         <th style="width: 5%; text-align:center;">#</th>
                                         <th>Class Name</th>
                                         <th>Section</th>
-                                        <th style="width: 32%">Actions</th>
+                                        <th style="width: 20%">Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <input type="hidden" name="id" id="id">
                                     <tr>
                                         <td>&nbsp;</td>
+                                        <td>
+                                            <input type="text" class="form-control" name="class_name" id="class_name"
+                                                   placeholder="Section Name" required>
+                                        </td>
                                         <td>
                                             <select class="form-control select2" name="section_id" id="section_id"
                                                     style="width: 100%;" required>
@@ -54,10 +58,6 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control" name="class_name" id="class_name"
-                                                   placeholder="Section Name" required>
                                         </td>
                                         <td>
                                             &nbsp;
@@ -71,18 +71,19 @@
                                             <td style="width: 5%; text-align:center;">{{$loop->iteration}}</td>
                                             <td>{{ $klass->class_name }}</td>
                                             <td>{{ $klass->title }}</td>
-                                            <td style="text-align: center">
-                                                <a class="btn btn-outline-success btn-sm assign">
-                                                    <i class="fa fa-link"></i> Assign Subject(s)
-                                                </a>
-                                                &nbsp;
-                                                <a class="btn btn-outline-primary btn-sm edit"
+                                            <td>
+                                                {{--                                                <a style="font-size: 0.8em" class="btn btn-outline-success btn-sm assign">--}}
+                                                {{--                                                    <i class="fa fa-link"></i> Assign Subject(s)--}}
+                                                {{--                                                </a>--}}
+                                                {{--                                                &nbsp;--}}
+                                                <a style="font-size: 0.8em" class="btn btn-outline-primary btn-sm edit"
                                                    data-id="{{ $klass->id }}" data-class-name="{{ $klass->class_name }}"
                                                    data-section-id="{{ $klass->section_id }}">
                                                     <i class="fa fa-edit"></i> Edit
                                                 </a>
                                                 &nbsp;
-                                                <a class="btn btn-outline-danger btn-sm delete" data-toggle="modal"
+                                                <a style="font-size: 0.8em" class="btn btn-outline-danger btn-sm delete"
+                                                   data-toggle="modal"
                                                    data-id="{{ $klass->id }}" data-target="#modal-delete">
                                                     <i class="fa fa-trash"></i> Delete
                                                 </a>

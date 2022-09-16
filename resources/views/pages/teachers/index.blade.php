@@ -41,7 +41,7 @@
                                     <th>Full Name</th>
                                     <th>Phone</th>
                                     <th>Address</th>
-                                    <th style="width: 30%">Actions</th>
+                                    <th style="width: 32%">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -97,19 +97,21 @@
                                             <td>{{ $teacher->gsm }}</td>
                                             <td>{{ $teacher->address }}</td>
                                             <td>
-                                                <a class="btn btn-outline-success btn-sm assign" data-toggle="modal"
+                                                <a style="font-size: 0.8em"
+                                                   class="btn btn-outline-success btn-sm assign" data-toggle="modal"
                                                    data-target="#modal-assign" data-id="{{ $teacher->id }}">
                                                     <i class="fa fa-link"></i> Assign Subject(s)
                                                 </a>
                                                 &nbsp;
-                                                <a class="btn btn-outline-primary btn-sm edit"
+                                                <a style="font-size: 0.8em" class="btn btn-outline-primary btn-sm edit"
                                                    data-id="{{ $teacher->id }}" data-title="{{ $teacher->title }}"
                                                    data-name="{{ $teacher->fullname }}" data-gsm="{{ $teacher->gsm }}"
                                                    data-address="{{ $teacher->address }}">
                                                     <i class="fa fa-edit"></i> Edit
                                                 </a>
                                                 &nbsp;
-                                                <a class="btn btn-outline-danger btn-sm delete" data-toggle="modal"
+                                                <a style="font-size: 0.8em" class="btn btn-outline-danger btn-sm delete"
+                                                   data-toggle="modal"
                                                    data-id="{{ $teacher->id }}" data-target="#modal-delete">
                                                     <i class="fa fa-trash"></i> Delete
                                                 </a>
