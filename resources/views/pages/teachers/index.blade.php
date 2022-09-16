@@ -233,17 +233,19 @@
     <script>
         $(document).ready(function () {
             $(document).on('click', '.assign', function () {
+                $('#klass').val('')
+                $('#session_id').val('')
+                $('#subjects-body').html('')
+
                 $('#teacher-id').val($(this).data('id'))
             })
 
             $('#klass').on('change', function () {
                 $('#subjects-body').html('')
 
-                let teacher_id = $(this).data('id')
-
                 $.get('{{ route('manage.teachers.teacher.subjects',[':session', ':class', ':teacher']) }}'
                         .replace(':session', $('#session_id').val()).replace(':class', $('#klass').val())
-                        .replace(':teacher', teacher_id),
+                        .replace(':teacher', $('#teacher-id').val()),
                     function (data) {
 
                         let rows = ''
