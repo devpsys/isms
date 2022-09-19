@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css') }}">
 @endsection
 @section('content')
     <!-- Content Header (Page header) -->
@@ -52,7 +53,7 @@
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                         <td>
-                                            <select class="form-control select2" name="title" id="title"
+                                            <select class="form-control" name="title" id="title"
                                                     style="width: 100%;" required>
                                                 <option>Select Title</option>
                                                 <option value="Malam">Malam</option>
@@ -186,8 +187,9 @@
                                 </div>
                                 <div class="col-6 form-group">
                                     <label>Class</label>
-                                    <select class="form-control" name="class_id" id="klass" required>
-                                        <option value="">Select Class</option>
+                                    <select class="form-control select2" multiple="multiple"
+                                            data-placeholder="Select Class(es)"
+                                            style="width: 100%;" name="classes[]" id="klass" required>
                                         @foreach(\App\Models\Klass::all() as $class)
                                             <option value="{{ $class->id }}">{{ $class->class_name }}</option>
                                         @endforeach
@@ -230,22 +232,26 @@
 @section('scripts')
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
     <script src="{{ asset('assets/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>`
     <script>
         $(document).ready(function () {
+            $('.select2').select2()
+
             $(document).on('click', '.assign', function () {
-                $('#klass').val('')
                 $('#session_id').val('')
                 $('#subjects-body').html('')
+                $('#klass').val(null).trigger('change');
 
                 $('#teacher-id').val($(this).data('id'))
             })
 
             $('#klass').on('change', function () {
+                if ($(this).val() == '')
+                    return
+
                 $('#subjects-body').html('')
 
-                $.get('{{ route('manage.teachers.teacher.subjects',[':session', ':class', ':teacher']) }}'
-                        .replace(':session', $('#session_id').val()).replace(':class', $('#klass').val())
-                        .replace(':teacher', $('#teacher-id').val()),
+                $.post('{{ route('manage.teachers.teacher.subjects') }}', $('#subjects-form').serialize(),
                     function (data) {
 
                         let rows = ''
