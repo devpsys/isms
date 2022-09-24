@@ -100,7 +100,9 @@
                                             <td>
                                                 <a style="font-size: 0.8em"
                                                    class="btn btn-outline-success btn-sm assign" data-toggle="modal"
-                                                   data-target="#modal-assign" data-id="{{ $teacher->id }}">
+                                                   data-target="#modal-assign"
+                                                   data-id="{{ $teacher->id }}" data-title="{{ $teacher->title }}"
+                                                   data-fullname="{{ $teacher->fullname }}">
                                                     <i class="fa fa-link"></i> Assign Subject(s)
                                                 </a>
                                                 &nbsp;
@@ -166,7 +168,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Assign Subject(s)</h4>
+                            <h4 class="modal-title">Assign Subject(s): <span id="teacher-name"></span></h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -238,6 +240,8 @@
             $('.select2').select2()
 
             $(document).on('click', '.assign', function () {
+                $('#teacher-name').html($(this).data('title') + ', ' + $(this).data('fullname'))
+
                 $('#session_id').val('')
                 $('#subjects-body').html('')
                 $('#klass').val(null).trigger('change');
